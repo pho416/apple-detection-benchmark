@@ -8,3 +8,6 @@ models/
 .venv/
 *.pt
 *.pth
+dataset/
+ultralytics/runs/
+.gradio/

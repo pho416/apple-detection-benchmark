@@ -21,11 +21,6 @@ try:
 except Exception as e:
     print(f"❌ Lỗi nạp MSRRT-DERT: {e}")
 
-try:
-    model_msrrt_v2 = RTDETR("models/MSRRT-DERT-v2.pt") 
-    print("✅ Đã nạp MSRRT-DERT-v2")
-except Exception as e:
-    print(f"❌ Lỗi nạp MSRRT-DERT-v2: {e}")
 
 try:
     # Khởi tạo thể xác từ class bạn định nghĩa
@@ -44,7 +39,6 @@ except Exception as e:
     print(f"❌ Lỗi nạp YOLO: {e}")
 # --- Load Model 2: Faster R-CNN (.pth) ---
 try:
-    from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
     from torchvision.models.detection import FasterRCNN
     from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
     
@@ -75,8 +69,7 @@ def predict_apple(image, model_name, conf_threshold):
         # Nhóm Ultralytics (Dùng chung 1 hàm xử lý)
         if model_name == "MSRRT-DERT":
             final_image, report_text = process_apple_prediction(image, model_msrrt, conf_threshold)
-        elif model_name == "MSRRT-DERT-v2":
-            final_image, report_text = process_apple_prediction(image, model_msrrt_v2, conf_threshold)
+
         elif model_name == "YOLO":
             final_image, report_text = process_apple_prediction(image, model_yolo, conf_threshold)
             
@@ -101,7 +94,7 @@ def predict_apple(image, model_name, conf_threshold):
 with gr.Blocks(theme=gr.themes.Base()) as demo:
     gr.Markdown(
         """
-        # 🍎 Hệ thống Nhận diện và Instance Segmentation Táo
+        # 🍎 Hệ thống Nhận diện và Phân loại Táo
         **Đồ án môn Thị giác máy tính**
         """
     )
@@ -113,7 +106,6 @@ with gr.Blocks(theme=gr.themes.Base()) as demo:
             model_dropdown = gr.Dropdown(
                 choices=[
                     "MSRRT-DERT", 
-                    "MSRRT-DERT-v2", 
                     "YOLO",
                     "Custom RetinaNet",
                     "Faster R-CNN (ResNet18)"
@@ -136,7 +128,7 @@ with gr.Blocks(theme=gr.themes.Base()) as demo:
         with gr.Column(scale=1):
             gr.Markdown("### 2. Kết quả phân tích")
             output_text = gr.Textbox(label="Thông số trích xuất", lines=6)
-            output_image = gr.Image(label="Bản đồ Segmentation & Bounding Box")
+            output_image = gr.Image(label="Bản đồ Bounding Box")
 
     predict_btn.click(
         fn=predict_apple,
@@ -145,4 +137,4 @@ with gr.Blocks(theme=gr.themes.Base()) as demo:
     )
 
 if __name__ == "__main__":
-    demo.launch(share=False)
+    demo.launch(share=True)
